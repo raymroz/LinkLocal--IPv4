@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/LinkLocal-IPv4-Interface.t
+lib/LinkLocal/IPv4/Interface.pm
