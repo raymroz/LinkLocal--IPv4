@@ -1,4 +1,4 @@
-package Constants;
+package LinkLocal::IPv4::Interface::Constants;
 
 our $VERSION = '0.10';
 
