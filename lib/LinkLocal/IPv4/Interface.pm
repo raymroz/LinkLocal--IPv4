@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface;
 
-use 5.010000;
+#use 5.010000;
 
 require Exporter;
 our @ISA         = qw(Exporter);
@@ -33,16 +33,15 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use IO::Interface::Simple;
 use Regexp::Common qw/ net /;
-use Data::Dump qw / ddx /;
 
 use LinkLocal::IPv4::Interface::Constants;
-use LinkLocal::IPv4::Interface::Types;
-use LinkLocal::IPv4::Interface::Daemon;
 
-subtype 'LinkLocalInterface' => as class_type('IO::Interface::Simple');
+subtype 'LinkLocalInterface' 
+	=> as class_type('IO::Interface::Simple');
 
-coerce 'LinkLocalInterface' => from 'Str' =>
-  via { IO::Interface::Simple->new($_) };
+coerce 'LinkLocalInterface' 
+	=> from 'Str' 
+	=> via { IO::Interface::Simple->new($_) };
 
 has 'interface' => (
     is      => 'bare',
@@ -58,8 +57,10 @@ has 'interface' => (
     coerce => 1,
 );
 
-subtype 'IpAddress' => as 'Str' => where { /^$RE{net}{IPv4}/ } =>
-  message { "$_: Invalid IPv4 address format." };
+subtype 'IpAddress' 
+	=> as 'Str' 
+	=> where { /^$RE{net}{IPv4}/ } 
+	=> message { "$_: Invalid IPv4 address format." };
 
 has 'address_list' => (
     is       => 'ro',
@@ -103,8 +104,8 @@ sub _build_address_list {
 
     # Create a list of 10 pseudo-random Link-Local addresses
     my @llv4_ip_list = ();
-    for ( my $count = 0 ; $count < 10 ; $count++ ) {
-        $llv4_ip_list[$count] =
+    for ( my $iter = 0 ; $iter < 10 ; $iter++ ) {
+        $llv4_ip_list[$iter] =
           join( '.', '169.254', ( 1 + int( rand(254) ) ), int( rand(256) ) );
     }
 
@@ -117,7 +118,7 @@ sub _build_address_list {
 sub get_next_address {
     my $this = shift;
 
-    return shift( @{ $this->_get_address_list } );
+    return shift( @{ $this->_get_address_list() } );
 }
 
 no Moose;

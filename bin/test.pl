@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/opt/local/bin/perl
 
 # Script: test.pl
 #
@@ -22,10 +22,16 @@
 use strict;
 use warnings;
 
+use Moose;
+use FindBin;
+use lib "$FindBin::RealBin/../lib";
+use LinkLocal::IPv4::Interface;
+
 main();
 
 sub main {
 
+	my $if_obj = LinkLocal::IPv4::Interface->new('en1');
 }
 
 __END__
