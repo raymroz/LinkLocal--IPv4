@@ -39,12 +39,10 @@ use LinkLocal::IPv4::Interface::Constants;
 use LinkLocal::IPv4::Interface::Types;
 use LinkLocal::IPv4::Interface::Daemon;
 
-subtype 'LinkLocalInterface' 
-	=> as class_type('IO::Interface::Simple');
+subtype 'LinkLocalInterface' => as class_type('IO::Interface::Simple');
 
-coerce 'LinkLocalInterface' 
-	=> from 'Str' 
-	=> via { IO::Interface::Simple->new($_) };
+coerce 'LinkLocalInterface' => from 'Str' =>
+  via { IO::Interface::Simple->new($_) };
 
 has 'interface' => (
     is      => 'bare',
@@ -60,11 +58,9 @@ has 'interface' => (
     coerce => 1,
 );
 
-subtype 'IpAddress' 
-	=> as 'Str' 
-	=> where { /^$RE{net}{IPv4}/ } 
-	=> message { "$_: Invalid IPv4 address format." };
-	
+subtype 'IpAddress' => as 'Str' => where { /^$RE{net}{IPv4}/ } =>
+  message { "$_: Invalid IPv4 address format." };
+
 has 'address_list' => (
     is       => 'ro',
     isa      => 'ArrayRef[IpAddress]',
@@ -73,9 +69,9 @@ has 'address_list' => (
     init_arg => undef,
 );
 
-# ==============================
-# = BUILDARGS: method modifier =
-# ==============================
+# =============
+# = BUILDARGS =
+# =============
 around BUILDARGS => sub {
     my $orig = shift;
     my $this = shift;
@@ -88,34 +84,36 @@ around BUILDARGS => sub {
     }
 };
 
-# =========================
-# = _build_address_list() =
-# =========================
+# =======================
+# = _build_address_list =
+# =======================
 sub _build_address_list {
     my $this = shift;
 
     # Generate srand() seed from mac address
-    my $mac       = $this->get_if_addr;
-    my @split_mac = split( /\./, $addy );
+    my $mac       = $this->get_if_mac;
+    my @split_mac = split( /':'/, $mac );
     my $seed      = 0;
     foreach my $element (@split_mac) {
-        $sum += hex($element);
+        $seed += hex($element);
     }
 
-    my @llv4_ip_list = ();
+    # Seed for pseudo-random address generation
+    srand($seed);
 
-    #srand( hex($this->get_if_addr) );
-    for ( my $x = 0 ; $x < 10 ; $x++ ) {
-        $llv4_ip_list[$x] =
+    # Create a list of 10 pseudo-random Link-Local addresses
+    my @llv4_ip_list = ();
+    for ( my $count = 0 ; $count < 10 ; $count++ ) {
+        $llv4_ip_list[$count] =
           join( '.', '169.254', ( 1 + int( rand(254) ) ), int( rand(256) ) );
     }
 
     return \@llv4_ip_list;
 }
 
-# ======================
-# = get_next_address() =
-# ======================
+# ====================
+# = get_next_address =
+# ====================
 sub get_next_address {
     my $this = shift;
 
@@ -127,7 +125,6 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 
-
 =head1 NAME
 
 LinkLocal::IPv4::Interface - Moose-based network interface object wrapper
@@ -135,40 +132,58 @@ LinkLocal::IPv4::Interface - Moose-based network interface object wrapper
 =head1 SYNOPSIS
 
   use LinkLocal::IPv4::Interface;
-  blah blah blah
+  
+  my $if = LinkLocal::IPv4::Interface->new('eth0');
+  $if->get_next_address(); 
 
 =head1 DESCRIPTION
 
-Stub documentation for LinkLocal::IPv4::Interface, created by h2xs. It looks like the
+Link-Local addresses provide a means for network attached devices to participate in 
+unmanaged IP networks. Based upon an IETF standard, RFC 3927, 
+
+LinkLocal::IPv4::Interface provides a simple and lightweight mechanism for dynamic
+configuration of network interfaces with IPv4 Link-Local addresses. 
 
 
-Blah blah blah.
+=head2 ATTRIBUTES
+
+=over 4
+
+=item $if->interface
+
+=back
 
 =head2 EXPORT
 
-None by default.
-
+	PROBE_WAIT          =>  1 second
+	PROBE_NUM           =>  3
+	PROBE_MIN           =>  1 second
+	PROBE_MAX           =>  2 seconds
+	ANNOUNCE_WAIT       =>  2 seconds
+	ANNOUNCE_NUM        =>  2
+	ANNOUNCE_INTERVAL   =>  2 seconds
+	MAX_CONFLICTS       => 10
+	RATE_LIMIT_INTERVAL => 60 seconds
+	DEFEND_INTERVAL     => 10 seconds
 
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
+Refer to L<RFC-3927>, "Dynamic Configuration of IPv4 Link-Local Adresses", the complete
+text of which can be found in the top level of the package archive.
 
-If you have a mailing list set up for your module, mention it here.
+L<perl>, L<IO::Interface::Simple>, L<Moose>
 
-This project is hosted at github at:
+This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
 
 =head1 AUTHOR
 
-Raymond Mroz, E<lt>mroz@cpan.orgE<gt>
+Ray Mroz, E<lt>mroz@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2010 Raymond Mroz
+Copyright (C) 2010 Ray Mroz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
