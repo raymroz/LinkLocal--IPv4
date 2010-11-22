@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface;
 
-#use 5.010000;
+use 5.010000;
 
 require Exporter;
 our @ISA         = qw(Exporter);
@@ -43,16 +43,19 @@ coerce 'LinkLocalInterface'
 	=> from 'Str' 
 	=> via { IO::Interface::Simple->new($_) };
 
+# =============
+# = interface =
+# =============
 has 'interface' => (
     is      => 'bare',
     isa     => 'LinkLocalInterface',
     handles => {
-        get_device  => 'name',
-        get_index   => 'index',
-        get_if_list => 'interfaces',
-        get_if_addr => 'address',
-        set_if_addr => 'address',
-        get_if_mac  => 'hwaddr',
+        get_if_device => 'name',
+        get_if_index  => 'index',
+        get_if_list   => 'interfaces',
+        get_if_addr   => 'address',
+        set_if_addr   => 'address',
+        get_if_mac    => 'hwaddr',
     },
     coerce => 1,
 );
@@ -62,11 +65,15 @@ subtype 'IpAddress'
 	=> where { /^$RE{net}{IPv4}/ } 
 	=> message { "$_: Invalid IPv4 address format." };
 
+# ================
+# = address_list =
+# ================
 has 'address_list' => (
     is       => 'ro',
     isa      => 'ArrayRef[IpAddress]',
     reader   => '_get_address_list',
     builder  => '_build_address_list',
+	lazy     => 1,
     init_arg => undef,
 );
 
@@ -118,6 +125,7 @@ sub _build_address_list {
 sub get_next_address {
     my $this = shift;
 
+    # TODO Fix this, it will break after 10 pulls
     return shift( @{ $this->_get_address_list() } );
 }
 
@@ -140,17 +148,17 @@ LinkLocal::IPv4::Interface - Moose-based network interface object wrapper
 =head1 DESCRIPTION
 
 Link-Local addresses provide a means for network attached devices to participate in 
-unmanaged IP networks. Based upon an IETF standard, RFC 3927, 
+unmanaged IP networks. Based upon IETF standard RFC 3927, LinkLocal::IPv4::Interface 
+provides a simple and lightweight framework for dynamic configuration of network 
+interfaces with IPv4 Link-Local addresses. 
 
-LinkLocal::IPv4::Interface provides a simple and lightweight mechanism for dynamic
-configuration of network interfaces with IPv4 Link-Local addresses. 
-
+# TODO Add additional/proper POD
 
 =head2 ATTRIBUTES
 
 =over 4
 
-=item $if->interface
+=item 
 
 =back
 

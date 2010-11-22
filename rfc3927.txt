@@ -1,9 +1,3 @@
-
-
-
-
-
-
 Network Working Group                                        S. Cheshire
 Request for Comments: 3927                                Apple Computer
 Category: Standards Track                                       B. Aboba
