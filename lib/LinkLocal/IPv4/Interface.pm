@@ -1,12 +1,12 @@
 package LinkLocal::IPv4::Interface;
 
-use 5.010000;
+require 5.010000;
 
-require Exporter;
-our @ISA         = qw(Exporter);
-our %EXPORT_TAGS = ();
-our @EXPORT_OK   = ();
-our @EXPORT      = qw();
+# require Exporter;
+# our @ISA         = qw(Exporter);
+# our %EXPORT_TAGS = ();
+# our @EXPORT_OK   = ();
+# our @EXPORT      = qw();
 
 # Copyright © 2010 Raymond Mroz
 #
@@ -32,16 +32,8 @@ our @EXPORT      = qw();
 use Moose;
 use Moose::Util::TypeConstraints;
 use IO::Interface::Simple;
-use Regexp::Common qw/ net /;
-
-use LinkLocal::IPv4::Interface::Constants;
-
-subtype 'LinkLocalInterface' 
-	=> as class_type('IO::Interface::Simple');
-
-coerce 'LinkLocalInterface' 
-	=> from 'Str' 
-	=> via { IO::Interface::Simple->new($_) };
+use Regexp::Common qw/net/;
+use LinkLocal::IPv4::Interface::Types;
 
 # =============
 # = interface =
@@ -59,11 +51,6 @@ has 'interface' => (
     },
     coerce => 1,
 );
-
-subtype 'IpAddress' 
-	=> as 'Str' 
-	=> where { /^$RE{net}{IPv4}/ } 
-	=> message { "$_: Invalid IPv4 address format." };
 
 # ================
 # = address_list =

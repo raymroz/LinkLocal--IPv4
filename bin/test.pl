@@ -21,17 +21,25 @@
 
 use strict;
 use warnings;
+use feature ':5.10';
 
-use Moose;
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
+
 use LinkLocal::IPv4::Interface;
+use LinkLocal::IPv4::Interface::ARP;
+
+use Data::Dump qw/ ddx /;
+
 
 main();
 
+# ========
+# = main =
+# ========
 sub main {
+	say "Testing LinkLocal::IPv4::Interface";
 
-	my $if_obj = LinkLocal::IPv4::Interface->new('en1');
 }
 
 __END__
