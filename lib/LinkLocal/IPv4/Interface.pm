@@ -31,8 +31,6 @@ require 5.010000;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use IO::Interface::Simple;
-use Regexp::Common qw/net/;
 use LinkLocal::IPv4::Interface::Types;
 
 # =============

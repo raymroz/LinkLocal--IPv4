@@ -19,7 +19,6 @@ require 5.010000;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use Net::Frame::Layer::ARP qw(:consts);
 use LinkLocal::IPv4::Interface::Types;
 
 # ==========

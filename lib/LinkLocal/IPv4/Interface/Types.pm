@@ -19,6 +19,9 @@ require 5.010000;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use Regexp::Common qw/net/;
+use Net::Frame::Layer::ARP qw/:consts/;
+use IO::Interface::Simple;
 
 subtype 'ArpPacket' 
 	=> as class_type('Net::Frame::Layer::ARP');
