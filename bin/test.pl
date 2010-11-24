@@ -38,7 +38,11 @@ main();
 # = main =
 # ========
 sub main {
+    
 	say "Testing LinkLocal::IPv4::Interface";
+	
+	my $obj =                                                                                                    LinkLocal::IPv4::Interface->new();
+
 
 }
 

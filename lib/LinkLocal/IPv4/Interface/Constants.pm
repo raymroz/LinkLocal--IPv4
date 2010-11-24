@@ -2,7 +2,7 @@ package LinkLocal::IPv4::Interface::Constants;
 
 our $VERSION = '0.10';
 
-# Copyright © 2010 Raymond Mroz
+# Copyright (C) 2010 Raymond Mroz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

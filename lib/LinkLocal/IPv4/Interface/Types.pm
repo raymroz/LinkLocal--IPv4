@@ -2,7 +2,7 @@ package LinkLocal::IPv4::Interface::Types;
 
 require 5.010000;
 
-# Copyright © 2010 Raymond Mroz
+# Copyright (C) 2010 Raymond Mroz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,72 +54,93 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-LinkLocal::IPv4::Interface::Types - A collection of shared Moose type definitions and coercions.
+LinkLocal::IPv4::Interface::Types - A collection of shared Moose subtype definitions and coercions.
 
 =head1 SYNOPSIS
 
+  use Moose;
   use LinkLocal::IPv4::Interface::Types;
 
   has 'ip_address' => (
-      is  => 'ro',
-      isa => 'IpAddress',
+      is     => 'ro',
+      isa    => 'IpAddress',
+      writer => 'set_ip_address',
   );
 
   has 'packet' => (
-      is  => 'ro',
-      isa => 'ArpPacket',
+      is     => 'ro',
+      isa    => 'ArpPacket',
+      writer => 'set_packet', 
+      coerce => 1,
   );
+  
+  sub set_attribs {
+      my $this = shift;
+      my ($ip_address, $net_settings_hashref) = @_;
+      
+      # Set up the attributes
+      $this->set_ip_address($ip_address);
+      $this->set_packet( $net_settings_hashref );
+  }
 
 =head1 DESCRIPTION
 
-This Moose-based wrapper object provides a collection of shared types compliant with and dependant
-upon the Moose type and constraint system. All type coercions are also present here. Client code 
-only need 'use' this file and it has access to all custom types in a system wide fashion.
+This Moose-based wrapper object provides a collection of shared types, compliant with and dependant
+upon the Moose type and constraint system. All type coercions which are defined and used are also present 
+here. Client code only need C<use> this file and it has access to all custom types in a consistent system 
+wide way. By collecting and presenting these defined types in one place, it guarantees easy and consistent 
+access to them on a project wide scope (see L<Moose::Manual::BestPractices>).
 
-=head1 SUBTYPES
+=head2 SUBTYPES
 
 =over 4
 
-=item B<ArpPacket> 
- From base type Object, isa L<Net::Frame::Layer::ARP>. ArpPacket provides the basis for both
- ARP Probes and Announce messages, both of which are required in the implementation of
- RFC-3927.
+=item C<ArpPacket>
 
-=item LinkLocalInterface
- From base type Object, isa L<IO::Interface::Simple>. LinkLocalInterface is a custom object
- wrapper of a hardware network interface on the system being configured for dynamic link-local
- addressing. It provides an entry point to this auto-ip framework.
+From base type C<Object>, C<isa> C<Net::Frame::Layer::ARP>. ArpPacket provides the basis for both
+ARP Probes and Announce messages, both of which are required in the implementation of
+F<RFC-3927>.
 
-=item B<IpAddress>
- From base type Str, uses L<Regexp::Common> to provide a type constraint for IPv4 dotted-decimal 
- notation addresses.
+=item C<LinkLocalInterface>
 
-=item B<LinkLocalAddress>
- From base type IpAddress, this type provides for a type constraint for IPv4 dotted-decimal
- notation addresses as is specified in RFC-3927; The prefix 169.254/16 is reserved by IANA for
- the exclusive use of link-local address allocation (noting that the first 256 and last 256 
- addresses in the 169.254/16 prefix are reserved for future use and MUST NOT be selected by 
- a host using this dynamic configuration mechanism).
+From base type C<Object>, C<isa> C<IO::Interface::Simple>. LinkLocalInterface is a custom object
+wrapper of a hardware network interface on the system being configured for dynamic link-local
+addressing. It provides an entry point to this auto-ip framework.
+
+=item C<IpAddress>
+
+From base type C<Str>, uses C<Regexp::Common> to provide a type constraint for IPv4 dotted-decimal 
+notation addresses.
+
+=item C<LinkLocalAddress>
+
+From base type C<IpAddress>, this type provides for a type constraint for IPv4 dotted-decimal
+notation addresses as is specified in F<RFC-3927>; The prefix C<169.254/16> is reserved by IANA for
+the exclusive use of link-local address allocation (noting that the first 256 and last 256 
+addresses in the C<169.254/16> prefix are reserved for future use and B<MUST NOT> be selected by 
+a host using this dynamic configuration mechanism).
 
 =back
 
-=head1 COERCIONS
+=head2 COERCIONS
 
 =over 4
 
-=item B<ArpPacket>
-Type coercion of a Moose HashRef into an ArpPacket type via a L<Net::Frame::Layer::ARP>
+=item C<ArpPacket>
+
+Type coercion of a C<HashRef> into an C<ArpPacket> type via a C<Net::Frame::Layer::ARP>
 object type.
 
-=item B<LinkLocalInterface>
-Type coercion of a Moose Str type representing a network device name into an object of
-type L<IO::Interface::Simple>.
+=item C<LinkLocalInterface>
+
+Type coercion of a C<Str> type representing a network device name into an object of
+type C<IO::Interface::Simple>.
 
 =back
 
 =head1 SEE ALSO
 
-Refer to RFC-3927, "Dynamic Configuration of IPv4 Link-Local Adresses", the complete
+Refer to F<RFC-3927>, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
 L<perl>, L<Net::Frame::Layer::ARP>, L<IO::Interface::Simple>, L<Regexp::Common>, L<Moose>

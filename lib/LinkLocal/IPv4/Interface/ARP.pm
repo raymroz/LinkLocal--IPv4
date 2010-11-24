@@ -2,7 +2,7 @@ package LinkLocal::IPv4::Interface::ARP;
 
 require 5.010000;
 
-# Copyright © 2010 Raymond Mroz
+# Copyright (C) 2010 Raymond Mroz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -46,8 +46,9 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-LinkLocal::IPv4::Interface::ARP - An ARP packet wrapper, representing one of two ARP packets
-required by the specification, type PROBE or ANNOUNCE.
+LinkLocal::IPv4::Interface::ARP - An ARP packet wrapper, this class allows for the easy construction
+of either Probe or Announce ARP Requests, both of which are central to dynamic link-local address
+configuration.
 
 =head1 SYNOPSIS
 
@@ -59,10 +60,10 @@ required by the specification, type PROBE or ANNOUNCE.
   my $set_probe    = { srcIp => '000.000.000.000', dstIp => '169.254.100.100' };
   my $set_announce = { srcIp => '169.254.100.100', dstIp => '169.254.100.100' };
 
-  # Setup an ARP PROBE packet, testing if link-local address 169.254.100.100 is in use
+  # Setup an ARP Probe packet, testing if link-local address 169.254.100.100 is in use
   $arp->packet( $set_probe );
 
-  # Setup an ARP ANNOUNCE packet, claiming link-local address 169.254.100.100 on network
+  # Setup an ARP Announce packet, claiming link-local address 169.254.100.100 on network
   $arp->packet( $set_announce );
   
   # Also valid, if no srcIp hash key, assumes probe and zeroes sender address
@@ -71,80 +72,91 @@ required by the specification, type PROBE or ANNOUNCE.
 =head1 DESCRIPTION
 
 This small ARP packet wrapper class plays a critical role in the dynamic configuration of IPv4
-link-local addresses. When a new address is pseudo-randomly determined, ARP PROBE messages are
-sent out over the interface which is being configured. The ARP packets are of type request,
-have the source address zeroed out and the target address (dstIp) set to the address which has
-been selected and is being probed. Three of these ARP PROBEs are sent at randomly spaced 
-intervals and if no conflict is detected during the process, the implementation will claim the
-address for the interface within the unmanaged network.
+link-local addresses. When a new address is pseudo-randomly determined, ARP Probe messages are
+sent out over the interface which is being configured with a link-local address. The ARP packets
+are of type ARP Request, have the source address zeroed out and the target address (dstIp) set 
+to the address which has been selected and is being probed. Three of these ARP Probes are sent 
+at randomly spaced intervals and if no conflict is detected during the process, the implementation 
+will claim the address for the interface within the unmanaged network.
 
-After an address has been claimed, the implementation requires that three ARP ANNOUNCE packets 
+After an address has been claimed, the implementation requires that three ARP Announce packets 
 be broadcast on the network. These packets have both sender and target addresses set to the 
-address which has been claimed by the implementation and the purpose here is to make sure that
-there are no stale ARP cache entries anywhere on the local link.
+address which has been claimed by the implementation. This is done to clean up any stale ARP
+cache's on the local-link.
 
-=head1 ATTRIBUTES
+=head2 ATTRIBUTES
 
 =over 4
 
-=item B<packet>
-This attributes hold the custom Moose type ArpPacket which in essence provides and allows for
-the Moose class wrapper around the L<Net::Frame::Layer::ARP> object type. The packet attribute
+=item C<packet>
+
+This attribute holds the custom Moose type ArpPacket which in essence provides and allows for
+the Moose class wrapper around the C<Net::Frame::Layer::ARP> object type. The packet attribute
 exposes a number of mappings via the Moose attribute handler construct which allow for direct
 mapping between them and the object reference type without forcing the additional layer of
 indirection upon client code.
 
-=item B<raw>
-This attribute is inherited from the original L<Net::Frame::Layer> class and it holds the raw
+=item C<raw>
+
+This attribute is inherited from the original C<Net::Frame::Layer> class and it holds the raw
 layer as has just been pulled from the network or has been packed for network transmission (see 
-the dump_arp() method below).
+the dump_arp method below).
 
 =back
 
-=head1 METHODS
+=head2 METHODS
 
 =over 4
 
-=item B<packet()>
+=item C<packet()>
+
 The packet() method provides the most basic means of setting the target and sender addresses
 to the desired value, depending upon the type of ARP packet being constructed. packet() takes
 both a blessed or non-blessed hash reference, so the return type from object creation can be
-passed to this method as long as this blessed reference isa L<Net::Frame::Layer::ARP> object.
+passed to this method as long as this blessed reference isa C<Net::Frame::Layer::ARP> object.
 
-=item B<pack_arp()>
+=item C<pack_arp()>
+
 Packs all attributes into a raw format suitable for injection into the network. Returns the 
 raw packed string on success, undef otherwise. Result is stored into raw attribute. See 
 L<Net::Frame::Layer> for further details.
 
-=item B<unpack_arp()>
+=item C<unpack_arp()>
+
 Unpacks raw data from network and stores attributes into the object. Returns $this on success, 
 undef otherwise.
 
-=item B<get_key()>
+=item C<get_key()> 
 
-=item B<get_key_reverse()>
+=item C<get_key_reverse()>
+
 These two methods are basically used to increase speed when using the recv method from 
-L<Net::Frame::Simple> via the packet object attribute. Usually, you use them when you need 
-to write a match method.
+C<Net::Frame::Simple> via the packet object attribute. Usually, you use them when you need 
+to write an is_match() method.
 
-=item B<is_match()>
-This method is mostly used internally. You pass a L<LinkLocal::IPv4::Interface::ARP->packet> 
+=item C<is_match()>
+
+This method is mostly used internally. You pass a C<LinkLocal::IPv4::Interface::ARP> packet 
 attribute as a parameter, and it returns true if this is a response corresponds with the 
 request, otherwise false.
 
-=item B<print_arp()>
+=item C<print_arp()>
+
 Prints a human readable string representation of the packet and its underlying state.
 
-=item B<dump_arp()>
+=item C<dump_arp()>
+
 Prints a hexadecimal formatted respresentation of the packet, exactly how this would appear on
 the network.
 
 =back
 
-Please Note: While this class does not directly override or map all of the underlying attributes
-and methods which are present in the base L<Net::Frame::Layer> type from which the Moose
+B<Please Note>: While this class does not directly override or map all of the underlying attributes
+and methods which are present in the base C<Net::Frame::Layer> type from which the Moose
 class is derived, one could, with an extra level of indirection, access the underlying
-attributes and methods from that base type. Please see the relevant POD for further details.
+attributes and methods from that base type. Clients of this module are encouraged to either conform
+to the current interface or to extend it via Moose's inheritance mechanism if they wish to access
+additional underlying functionality in this way. Please see the relevant POD for further details.
 
 =head1 SEE ALSO
 
