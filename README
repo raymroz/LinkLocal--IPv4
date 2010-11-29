@@ -1,10 +1,85 @@
-LinkLocal-IPv4-Interface version 0.01
+LinkLocal-IPv4-Interface version 0.15
 =====================================
 
-This is very much a work in progress, and what is currently
-present should have little use to anyone yet.  I am currently
-de-crufting (it is a word) some additional modules in this package
-and will add them soon.
+This package represents a lightweight, pure Perl implementation of the specification
+as outlined in RFC-3927, Dynamic Configuration of IPv4 Link-Local Addresses.
+This standard details a mechanism which provides a means of enabling automatic IPv4
+address allocations to network addressable entities and devices which by happenstance
+or design find themselves on an unmanaged, ad hoc IP network with no other means of
+acquiring a fully routable, unicast IPv4 address. As the name implies, link-local IPv4
+addresses are non-routable with all participating devices connected to the same physical
+link; this fact all but dictates that such networks are typically small. Home networks or
+other such small environments are well suited to the deployment of this standard. While 
+there are, in theory, upwards of 65,024 addresses available in the range for allocations,
+the reality is that as more addresses from the reserved range are allocated to hosts on
+the local link the number of collisions necessarily increases as well which degrades 
+overall performance. Products such as QIP meet this need in the enterprise.
+
+This standard is widely implemented in most major operating systems, most of which "more 
+or less" adhere to this specification. While I have remained true to the specification
+and to the algorithms detailed therein I have in some ways made "enhancements"; one
+example being my pseudorandom address selection will generate link-local addresses in
+blocks of ten. This is similar to the implementation found in OS X and some of the 
+various offerings by Microsoft. This decision was simply a matter of convenience and 
+nothing more.
+
+This module, LinkLocal::IPv4::Interface provides the main entry point into this
+implementation. Because the specification recommends that link-local address are generated
+in a pseudorandom fashion using something unique to the particular host on which they
+are being generated such as a MAC address, I have by design coupled the selection of 
+addresses closely with the interface object itself; given that I am indeed using the 
+interface hardware MAC as a seed to srand() this just made good sense to me. The primary
+gateway into this process is the call to the if_config() method. This method will step
+through the various steps in the address selection process and will configure the interface
+with a fully compliant IPv4 link-local address upon completion.
+
+There are some things I would like to note here. First, this implementation makes absolutely
+no assumptions about the current state of the interface at any time. Client code should
+know this. The specification is quite clear that IPv4 link-local addresses are to be used
+only in the absence of a fully routable IPv4 address. The dynamic configuration of an
+IPv4 link-local address is to never interfere with the operation of any of the other
+processes whereby a host can acquire a standard, routable address such as a DHCP state
+machine or static assignments under the direction of a network administrator. This 
+implementation is only to be used at such a time that a determination has been made that
+there are no operable and routable addresses configured on the interface. This library
+does not at any time make any assumptions about the operability of any addresses assigned
+to any interfaces on the host, nor does it in any way attempt to determine the management
+status of any network in which it participates. This is an important point to consider here 
+as small networks have become ubiquitous and "network hopping" with portable devices is 
+certainly a scenario that is much more common today than it was ten or even five years ago.
+Secondly, the configuration of an IPv4 link-local address is not something which is a
+static thing; the implementation does not just probe the local physical link for the
+address, configure the interface and forget about it. At any time an address conflict may
+occur at which time the selection process may begin again. I have addressed this fact in my
+design in a broad way. Client code will be expected to register a callback on a hook I 
+provide. Furthermore, I will also expose an optional pure Perl eventing mechanism which can be
+set to monitor ARP on the local link for any requests or replies which contain the currently
+configured link-local address. The other option here is that client code may wish to bring
+its own eventing mechanism to the party. As such I have met both needs by way of Marc
+Lehmann's AnyEvent module which has been described as the DBI of event loops. For those
+not familiar with Marc's AnyEvent and Coro material, you might want to run over and check
+out his stuff. In the world of asynchronous Perl eventing and coroutines, Marc is Master Yoda.
+
+NOTE: This is still very much a work in progress. Much of this is pulled from some old 
+stuff which I had around, including bits and bobs of some UPnP stuff I had in C and which
+I reimplemented in Perl. As such, some design is happening in situ. In addition to this, I
+do, unfortunately, have to go to work and feed myself so I am unable to hack on this and
+other things 24/7. I decided that I would push to CPAN early and chase my crufty push rather
+than keep it in a git repo on my Mac and constantly pick and preen it and never get anything
+actually out. So all that said, I will release as quickly and as often as I can and hopefully
+I will have something here approaching actually useful before long at all, so please bear
+with me and thanks for your patience.
+
+Also, this is fully intended to work along side such other protocols as Multicast Service
+Discovery and other lightweight service announcement protocols. The ability to get a
+valid address usable in communication with other hosts and devices on an unmanaged network
+is not terribly useful if you cannot find anything out about the particular network in 
+question. As such I am toying with the idea of integrating, albeit very loosely, one or more
+of the service discovery mechanisms out there as this is what makes link-local addressing
+actually useful, scenarios such as plugging a laptop and a printer into a network and they
+just work. While yes, there are full zero configuration suites out there in C and in other
+languages, there is no lightweight equivalent in Perl.... yet.
+
 
 INSTALLATION
 
@@ -22,6 +97,7 @@ This module requires these other modules and libraries:
   Moose
   Moose::Util::TypeConstraints
   IO::Interface::Simple
+  Net::Frame::Layer::Arp
   Regexp::Common
 
 COPYRIGHT AND LICENCE

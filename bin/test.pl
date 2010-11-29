@@ -26,11 +26,13 @@ use feature ':5.10';
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
 
+use IO::File;
+use Config;
+
 use LinkLocal::IPv4::Interface;
-use LinkLocal::IPv4::Interface::ARP;
+use LinkLocal::IPv4::Interface::Cache;
 
 use Data::Dump qw/ ddx /;
-
 
 main();
 
@@ -38,11 +40,11 @@ main();
 # = main =
 # ========
 sub main {
-    
-	say "Testing LinkLocal::IPv4::Interface";
-	
-	my $obj =                                                                                                    LinkLocal::IPv4::Interface->new();
 
+    my $interface  = 'eth0';
+    my $address    = '169.254.150.120';
+    my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
+    $cache_file->cache_this_ip( $interface, $address );
 
 }
 

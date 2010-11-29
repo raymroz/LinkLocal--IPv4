@@ -39,6 +39,11 @@ has 'packet' => (
     coerce => 1,
 );
 
+sub send {
+    my $this = shift;
+    # TODO Handle send, packet object will be passed into a "sender machine"
+}
+
 no Moose;
 
 __PACKAGE__->meta->make_immutable;
