@@ -45,8 +45,8 @@ sub main {
     my $address    = '169.254.150.123';
     my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
     $cache_file->cache_this_ip( $interface, $address );
-	my $last_ip = $cache_file->get_last_ip($interface);
-	print("last IP is ", $last_ip, "\n");
+    my $last_ip = $cache_file->get_last_ip($interface);
+    print( "last IP is ", $last_ip, "\n" );
 }
 
 __END__

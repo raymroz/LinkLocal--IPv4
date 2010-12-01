@@ -18,7 +18,7 @@ require 5.010000;
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use LinkLocal::IPv4::Interface::Types;
-use Moose; 
+use Moose;
 use MooseX::Params::Validate;
 use IO::File;
 use IO::All;
@@ -33,48 +33,51 @@ has '_cache' => (
     isa     => 'IO::File',
     builder => '_build_cache',
     lazy    => 1,
-	reader  => 'get_cache',
+    reader  => 'get_cache',
     handles => {
         _slurp_file    => 'getlines',
         _record_ip     => 'printf',
-		_refresh_cache => 'seek',
+        _refresh_cache => 'seek',
     },
     init_arg => undef,
 );
 
 sub _build_cache {
-	my $filename;                            # Cache file name 
-	
+    my $filename;    # Cache file name
+
     try {
-	    # Determine the file name based on OS
+
+        # Determine the file name based on OS
         given ($^O) {
             when ( m/linux/ || m/bsd/ ) {    # Linux || (Free|Open|Net)BSD
-				print("OS MATCHED ON Linux/BSD\n");
-				$filename = "/var/cache/link-local/link-local.tab";	
+                print("OS MATCHED ON Linux/BSD\n");
+                $filename = "/var/cache/link-local/link-local.tab";
             }
             when (m/darwin/) {               # Mac OS X
                 print("OS MATCHED ON MAC\n");
-				$filename = "/Library/Caches/org.cpan.cache.link-local";
+                $filename = "/Library/Caches/org.cpan.cache.link-local";
             }
             when (m/solaris/) {              # SunOS
-				print("OS MATCHED ON SunOS\n");
-				$filename = "/etc/link-local/link-local.tab";
+                print("OS MATCHED ON SunOS\n");
+                $filename = "/etc/link-local/link-local.tab";
             }
             when (m/MSWin32/) {              # Windows
-				print("OS MATCHED ON Windows\n");
-				$filename = "%ALLUSERSPROFILE%\\link-local\\link-local.tab";
+                print("OS MATCHED ON Windows\n");
+                $filename = "%ALLUSERSPROFILE%\\link-local\\link-local.tab";
             }
             default {
                 die "Unsupported OS type";
-            }	
+            }
         }
-		# If file exists, read and update file
-		if ( io($filename)->exists ) {
-        	return new IO::File($filename, "r+");
-		} else { # If file doesn't exist, create it then read and update
-			io($filename)->touch;
-			return new IO::File( $filename, "r+");
-		}
+
+        # If file exists, read and update file
+        if ( io($filename)->exists ) {
+            return new IO::File( $filename, "r+" );
+        }
+        else {    # If file doesn't exist, create it then read and update
+            io($filename)->touch;
+            return new IO::File( $filename, "r+" );
+        }
     }
     catch {
         die "Error while opening cache file: $!";
@@ -83,61 +86,15 @@ sub _build_cache {
 
 sub get_last_ip {
     my $this   = shift;
-	my @buffer = ();
-    my %cache = ();
-	
-	# Validate parameters tyeps
-    my ( $given_ifc ) = pos_validated_list( \@_, { isa => 'Str' });
-    
-    # Slurp the contents of buffer into a file
-    try {
-		$this->_refresh_cache(0, 0);
-        @buffer = $this->_slurp_file();	
-	}
-    catch {
-        die "Error while slurping cache file: $!\n";
-    };
-	
-    # Build a hash from if/ip current cache
-    foreach my $line (@buffer) {
-        chomp($line);
-        my ($if, $ip) = split('\s+', $line);
-        $cache{$if} = $ip;
-    }
-   
-    return $cache{$given_ifc};
-}
-
-sub cache_this_ip {
-    my $this = shift;
-
-	# Validate parameters tyeps
-    my ( $if, $ip ) = pos_validated_list( \@_, { isa => 'Str' }, { isa => 'IpAddress' } );
-
-	# Get cached IPs if exists
-    my %cache = $this->_get_hash_from_cache();
-
-	# Print out old cache hash
-	print("\nPrevious cached ifc/IP list:\n");
-	$this->print_cache_hash(\%cache);
-	
-	# Adding new IP 
-	print("\nCaching new ifc and ip ($if -> $ip).....\n");
-    $this->_record_ip( "%s\t%s\n", $if, $ip );
-
-	# Print out latest cache hash
-	print("\nUpdated cached ifc/IP list:\n");
-	$this->print_cache_hash(\%cache);
-}
-
-sub _get_hash_from_cache {    
-    my $this = shift;
     my @buffer = ();
-    my %cache = ();
-    
+    my %cache  = ();
+
+    # Validate parameters tyeps
+    my ($given_ifc) = pos_validated_list( \@_, { isa => 'Str' } );
+
     # Slurp the contents of buffer into a file
     try {
-		$this->_refresh_cache(0, 0);
+        $this->_refresh_cache( 0, 0 );
         @buffer = $this->_slurp_file();
     }
     catch {
@@ -147,22 +104,69 @@ sub _get_hash_from_cache {
     # Build a hash from if/ip current cache
     foreach my $line (@buffer) {
         chomp($line);
-        my ($if, $ip) = split('\s+', $line);
+        my ( $if, $ip ) = split( '\s+', $line );
         $cache{$if} = $ip;
     }
-    
+
+    return $cache{$given_ifc};
+}
+
+sub cache_this_ip {
+    my $this = shift;
+
+    # Validate parameters tyeps
+    my ( $if, $ip ) =
+      pos_validated_list( \@_, { isa => 'Str' }, { isa => 'IpAddress' } );
+
+    # Get cached IPs if exists
+    my %cache = $this->_get_hash_from_cache();
+
+    # Print out old cache hash
+    print("\nPrevious cached ifc/IP list:\n");
+    $this->print_cache_hash( \%cache );
+
+    # Adding new IP
+    print("\nCaching new ifc and ip ($if -> $ip).....\n");
+    $this->_record_ip( "%s\t%s\n", $if, $ip );
+
+    # Print out latest cache hash
+    print("\nUpdated cached ifc/IP list:\n");
+    $this->print_cache_hash( \%cache );
+}
+
+sub _get_hash_from_cache {
+    my $this   = shift;
+    my @buffer = ();
+    my %cache  = ();
+
+    # Slurp the contents of buffer into a file
+    try {
+        $this->_refresh_cache( 0, 0 );
+        @buffer = $this->_slurp_file();
+    }
+    catch {
+        die "Error while slurping cache file: $!\n";
+    };
+
+    # Build a hash from if/ip current cache
+    foreach my $line (@buffer) {
+        chomp($line);
+        my ( $if, $ip ) = split( '\s+', $line );
+        $cache{$if} = $ip;
+    }
+
     return %cache;
 }
 
 sub print_cache_hash {
-	my $this = shift;
-	my ($cache) = pos_validated_list( \@_, { isa => 'Ref' } );
-	
-	# Output interfaces and IPs
-	foreach my $key (keys %$cache) {
-		print("$key ", "-> ", $cache->{$key}, "\n");
-	}
-	print("\n");
+    my $this = shift;
+    my ($cache) = pos_validated_list( \@_, { isa => 'Ref' } );
+
+    # Output interfaces and IPs
+    foreach my $key ( keys %$cache ) {
+        print( "$key ", "-> ", $cache->{$key}, "\n" );
+    }
+    print("\n");
 }
 
 no Moose;
