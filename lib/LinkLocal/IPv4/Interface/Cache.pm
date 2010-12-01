@@ -28,7 +28,7 @@ use Data::Dump qw/ ddx /;
 use feature ':5.10';
 
 has '_cache' => (
-    is      => 'bare',
+    is      => 'ro',
     isa     => 'IO::File',
     builder => '_build_cache',
     lazy    => 1,
@@ -48,10 +48,9 @@ sub _build_cache {
                     O_RDWR | O_APPEND | O_CREAT );
             }
             when (m/darwin/) {               # Mac OS X
-                print("MATCHED ON MAC\n");
                 return new IO::File(
                     "/Library/Caches/org.cpan.cache.link-local",
-                    O_RDWR | O_APPEND | O_CREAT );
+                    "r" );
             }
             when (m/solaris/) {              # SunOS
                 return new IO::File(
@@ -74,71 +73,71 @@ sub _build_cache {
     };
 }
 
-sub get_last_ip {
-
-    my $this = shift;
-
-}
-
-sub cache_this_ip {
-
-    my $this = shift;
-    my ( $if, $ip ) = pos_validated_list( \@_, { isa => 'Str' }, { isa => 'IpAddress' } );
-    
-    # my @buffer = ();
-    # my %cache = ();
-    # 
-    # # Slurp the contents of buffer into a file
-    # try {
-    #     @buffer = $this->_slurp_file();
-    # }
-    # catch {
-    #     die "Error while slurping cache file: $!\n";
-    # };
-    # 
-    # # Build a hash from if/ip current cache
-    # foreach my $line (@buffer) {
-    #     chomp($line);
-    #     local ($if, $ip) = split('\t', @buffer);
-    #     $cache{$if} = $ip;
-    # }
-    # 
-    # # Create/update cache entry with current address
-    # $cache{$if} = $ip;
-    # 
-    # if ( $if ~~ %cache ) {
-    #     $cache{$if} = $ip;
-    # }
-
-    my %cache = $this->_get_hash_from_cache($if, $ip);
-
-    $this->_record_ip( "%s\t%s\n", $if, $ip );
-}
-
-sub _get_hash_from_cache {
-    
-    my $this = shift;
-    ddx($this);
-    my @buffer = ();
-    my %cache = ();
-    
-    # Slurp the contents of buffer into a file
-    try {
-        @buffer = $this->_slurp_file();
-    }
-    catch {
-        die "Error while slurping cache file: $!\n";
-    };
-    
-    # Build a hash from if/ip current cache
-    foreach my $line (@buffer) {
-        chomp($line);
-        my ($if, $ip) = split('\t', @buffer);
-        $cache{$if} = $ip;
-    }
-    
-    return \%cache;
-}
+# sub get_last_ip {
+# 
+#     my $this = shift;
+# 
+# }
+# 
+# sub cache_this_ip {
+# 
+#     my $this = shift;
+#     my ( $if, $ip ) = pos_validated_list( \@_, { isa => 'Str' }, { isa => 'IpAddress' } );
+#     
+#     my @buffer = ();
+#     my %cache = ();
+#     
+#     # Slurp the contents of buffer into a file
+#     try {
+#         @buffer = $this->_slurp_file();
+#     }
+#     catch {
+#         die "Error while slurping cache file: $!\n";
+#     };
+#     
+#     # Build a hash from if/ip current cache
+#     foreach my $line (@buffer) {
+#         chomp($line);
+#         local ($if, $ip) = split('\t', @buffer);
+#         $cache{$if} = $ip;
+#     }
+#     
+#     # Create/update cache entry with current address
+#     $cache{$if} = $ip;
+#     
+#     if ( $if ~~ %cache ) {
+#         $cache{$if} = $ip;
+#     }
+# 
+#     #my %cache = $this->_get_hash_from_cache($if, $ip);
+# 
+#     $this->_record_ip( "%s\t%s\n", $if, $ip );
+# }
+# 
+# sub _get_hash_from_cache {
+#     
+#     my $this = shift;
+#     ddx($this);
+#     my @buffer = ();
+#     my %cache = ();
+#     
+#     # Slurp the contents of buffer into a file
+#     try {
+#         @buffer = $this->_slurp_file();
+#     }
+#     catch {
+#         die "Error while slurping cache file: $!\n";
+#     };
+#     
+#     # Build a hash from if/ip current cache
+#     foreach my $line (@buffer) {
+#         chomp($line);
+#         my ($if, $ip) = split('\t', @buffer);
+#         $cache{$if} = $ip;
+#     }
+#     
+#     return \%cache;
+# }
 
 no Moose;
 

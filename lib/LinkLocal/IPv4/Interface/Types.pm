@@ -99,7 +99,7 @@ access to them on a project wide scope (see L<Moose::Manual::BestPractices>).
 
 From base type C<Object>, C<isa> C<Net::Frame::Layer::ARP>. ArpPacket provides the basis for both
 ARP Probes and Announce messages, both of which are required in the implementation of
-F<RFC-3927>.
+RFC-3927.
 
 =item C<LinkLocalInterface>
 
@@ -115,7 +115,7 @@ notation addresses.
 =item C<LinkLocalAddress>
 
 From base type C<IpAddress>, this type provides for a type constraint for IPv4 dotted-decimal
-notation addresses as is specified in F<RFC-3927>; The prefix C<169.254/16> is reserved by IANA for
+notation addresses as is specified in RFC-3927; The prefix C<169.254/16> is reserved by IANA for
 the exclusive use of link-local address allocation (noting that the first 256 and last 256 
 addresses in the C<169.254/16> prefix are reserved for future use and B<MUST NOT> be selected by 
 a host using this dynamic configuration mechanism).
@@ -140,7 +140,7 @@ type C<IO::Interface::Simple>.
 
 =head1 SEE ALSO
 
-Refer to F<RFC-3927>, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
+Refer to RFC-3927, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
 L<perl>, L<Net::Frame::Layer::ARP>, L<IO::Interface::Simple>, L<Regexp::Common>, L<Moose>

@@ -58,7 +58,7 @@ has 'address_list' => (
     isa      => 'ArrayRef[IpAddress]',
     reader   => '_get_address_list',
     builder  => '_build_address_list',
-	lazy     => 1,
+    lazy     => 1,
     init_arg => undef,
 );
 
@@ -94,7 +94,7 @@ sub _build_address_list {
     # Seed for pseudo-random address generation
     srand($seed);
 
-    # Create a list of 10 pseudo-random Link-Local addresses
+    # Create a list of 10 pseudo-random link-local addresses
     my @llv4_ip_list = ();
     for ( my $iter = 0 ; $iter < 10 ; $iter++ ) {
         $llv4_ip_list[$iter] =
@@ -130,7 +130,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-LinkLocal::IPv4::Interface - Moose-based network interface object wrapper
+LinkLocal::IPv4::Interface - IPv4 link-local interface wrapper
 
 =head1 SYNOPSIS
 
@@ -144,7 +144,7 @@ LinkLocal::IPv4::Interface - Moose-based network interface object wrapper
 =head1 DESCRIPTION
 
 This package represents a lightweight, pure Perl implementation of the specification
-as outlined in F<RFC-3927>, I<Dynamic Configuration of IPv4 Link-Local Addresses>.
+as outlined in RFC-3927, I<Dynamic Configuration of IPv4 Link-Local Addresses>.
 This standard details a mechanism which provides a means of enabling automatic IPv4
 address allocations to network addressable entities and devices which by happenstance
 or design find themselves on an unmanaged, ad hoc IP network with no other means of
@@ -313,7 +313,7 @@ General gateway method to this framework. A call to if_config begins the process
 dynamically configuring the specified interface with an IPv4 link-local address. This 
 call initiates the process of checking the link-local address cache for the last successfully
 configured address otherwise a list of ten, new pseudo-random generated addresses is
-created. The implementation fully adheres to the specification as defined in F<RFC-3927>
+created. The implementation fully adheres to the specification as defined in RFC-3927
 as it ARP Probes the first address in the list or from the cache to determine if it is
 already in use elsewhere on the local link. If it gets no response to its probe packets,
 it configures the interface with the address and sends ARP Announce packets announcing
@@ -341,7 +341,7 @@ state.
 
 =head1 SEE ALSO
 
-Refer to F<RFC-3927>, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
+Refer to RFC-3927, I<Dynamic Configuration of IPv4 link-local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
 L<perl>, L<IO::Interface::Simple>, L<Moose>

@@ -68,7 +68,7 @@ __END__
 
 =head1 NAME
 
-LinkLocal::IPv4::Interface::Constants - IPv4 link-local protocol constants as defined in F<RFC-3927>
+LinkLocal::IPv4::Interface::Constants - IPv4 link-local protocol constants as defined in RFC-3927
 
 =head1 SYNOPSIS
 
@@ -76,7 +76,7 @@ LinkLocal::IPv4::Interface::Constants - IPv4 link-local protocol constants as de
 
 =head1 DESCRIPTION
 
-These represent the various timing constants as are defined in Section 9 of F<RFC-3927> as a part of
+These represent the various timing constants as are defined in Section 9 of RFC-3927 as a part of
 the IPv4 link-local protocol.
 
 =head2 EXPORT
@@ -94,7 +94,7 @@ the IPv4 link-local protocol.
 
 =head1 SEE ALSO
 
-Refer to F<RFC-3927>, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
+Refer to RFC-3927, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
 L<perl>, L<LinkLocal::IPv4::Interface>
