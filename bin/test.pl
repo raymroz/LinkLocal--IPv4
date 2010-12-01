@@ -45,10 +45,11 @@ sub main {
     $cache_file->cache_this_ip( $interface, $address );
     my $last_ip = $cache_file->get_last_ip($interface);
     if ( $last_ip ne 'fail' ) {
-    	print( "last IP of interface $interface is ", $last_ip, "\n" );
-	} else {
-		print("No IP exists for interface $interface\n");
-	}
+        print( "last IP of interface $interface is ", $last_ip, "\n" );
+    }
+    else {
+        print("No IP exists for interface $interface\n");
+    }
 }
 
 __END__

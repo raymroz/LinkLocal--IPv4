@@ -63,7 +63,8 @@ sub _build_cache {
                 die "Unsupported OS type";
             }
         }
-		# Create IO::File object and return
+
+        # Create IO::File object and return
         return new IO::File( "$filename", O_RDWR | O_CREAT );
     }
     catch {
@@ -72,8 +73,8 @@ sub _build_cache {
 }
 
 sub get_last_ip {
-    my $this   = shift;
-    my (@buffer, %cache) = ();
+    my $this = shift;
+    my ( @buffer, %cache ) = ();
 
     # Validate parameters tyeps
     my ($given_ifc) = pos_validated_list( \@_, { isa => 'Str' } );
@@ -87,18 +88,20 @@ sub get_last_ip {
         die "Error while slurping cache file: $!\n";
     };
 
-	my $size = @buffer;
-	if ( $size > 0 ) {
-    	# Build a hash from if/ip current cache
-    	foreach my $line (@buffer) {
-        	chomp($line);
-        	my ( $if, $ip ) = split( '\t', $line );
-        	$cache{$if} = $ip;
-    	}
-		return $cache{$given_ifc};
-	} else {          # Empty buffer
-		return 'fail';
-	}
+    my $size = @buffer;
+    if ( $size > 0 ) {
+
+        # Build a hash from if/ip current cache
+        foreach my $line (@buffer) {
+            chomp($line);
+            my ( $if, $ip ) = split( '\t', $line );
+            $cache{$if} = $ip;
+        }
+        return $cache{$given_ifc};
+    }
+    else {    # Empty buffer
+        return 'fail';
+    }
 }
 
 sub cache_this_ip {
@@ -110,38 +113,42 @@ sub cache_this_ip {
 
     # Get cached IPs if exists
     my %cache = $this->_get_hash_from_cache();
-	
+
     # Print out old cache hash
     print("\nPrevious cached ifc/IP list:\n");
     $this->print_cache_hash( \%cache );
 
     # Adding new IP
-	if ( $cache{$if} ) {  # If the interface exists
-		if ( $cache{$if} eq $ip ) {
-			print("\nThe new interface and IP ($if -> $ip) you try to cache is already cached, skip...\n");
-		} elsif ( $cache{$if} ne $ip ) {
-    		print("\nCaching new IP ($ip) for interface ($if).....\n");
-			$cache{$if} = $ip;
-		}
-	} else {              # New IP entry
-		print("\nCaching new IP ($ip) and new interface ($if)...\n");
-		$cache{$if} = $ip;
-	}
-	
-	# Re-position the file-handle to the beginning of the file
-	$this->_refresh_cache( 0, 0 );
-	foreach my $key (sort (keys(%cache))) {
-		$this->_record_ip( "%s\t%s\n", $key, $cache{$key} );
-	}
-	
+    if ( $cache{$if} ) {    # If the interface exists
+        if ( $cache{$if} eq $ip ) {
+            print(
+"\nThe new interface and IP ($if -> $ip) you try to cache is already cached, skip...\n"
+            );
+        }
+        elsif ( $cache{$if} ne $ip ) {
+            print("\nCaching new IP ($ip) for interface ($if).....\n");
+            $cache{$if} = $ip;
+        }
+    }
+    else {                  # New IP entry
+        print("\nCaching new IP ($ip) and new interface ($if)...\n");
+        $cache{$if} = $ip;
+    }
+
+    # Re-position the file-handle to the beginning of the file
+    $this->_refresh_cache( 0, 0 );
+    foreach my $key ( sort ( keys(%cache) ) ) {
+        $this->_record_ip( "%s\t%s\n", $key, $cache{$key} );
+    }
+
     # Print out latest cache hash
     print("\nUpdated cached ifc/IP list:\n");
     $this->print_cache_hash( \%cache );
 }
 
 sub _get_hash_from_cache {
-    my $this   = shift;
-    my (@buffer, %cache) = ();
+    my $this = shift;
+    my ( @buffer, %cache ) = ();
 
     # Slurp the contents of buffer into a file
     try {
@@ -166,16 +173,18 @@ sub print_cache_hash {
     my $this = shift;
     my ($cache) = pos_validated_list( \@_, { isa => 'Ref' } );
 
-	my $size = scalar(keys %$cache);
-	if ( $size > 0 ) {
-    	# Output interfaces and IPs
-    	foreach my $key ( sort (keys(%$cache)) ) {
-        	print( "$key ", "-> ", $cache->{$key}, "\n" );
-    	}
-    	print("\n");
-	} else {
-		print ("(Empty)...\n");
-	}
+    my $size = scalar( keys %$cache );
+    if ( $size > 0 ) {
+
+        # Output interfaces and IPs
+        foreach my $key ( sort ( keys(%$cache) ) ) {
+            print( "$key ", "-> ", $cache->{$key}, "\n" );
+        }
+        print("\n");
+    }
+    else {
+        print("(Empty)...\n");
+    }
 }
 
 no Moose;
