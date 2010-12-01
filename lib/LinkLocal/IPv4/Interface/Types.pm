@@ -49,15 +49,21 @@ subtype 'LinkLocalAddress'
 
 # Custom Regexp::Common extension for link-local address pattern
 
-my %LLIP   = (
-    dec => q{(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
+#====================================================================
+# FIXME:2010-12-01: Investigate why this custom extension to 
+# the Regexp::Common module is not matching on the last two octets
+#====================================================================
+
+my %LLoctet   = (
+    dec => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
 );
+
 my $LLprefix = '169.254';
-my $IPdefsep = '[.]';
+my $IPsep = '[.]';
 
 pattern(
     name   => [qw (net linklocal)],
-    create => "(?k:$LLprefix$IPdefsep$LLIP{dec}$IPdefsep$LLIP{dec})",
+    create => "($LLprefix$IPsep$LLoctet{dec}$IPsep$LLoctet{dec})",
 );
 
 no Moose;

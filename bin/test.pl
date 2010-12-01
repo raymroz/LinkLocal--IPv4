@@ -39,8 +39,8 @@ main();
 # ========
 sub main {
 
-    my $interface  = 'ra0';
-    my $address    = '169.254.140.999';
+    my $interface  = 'eth1';
+    my $address    = '169.254.111.111';
     my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
     $cache_file->cache_this_ip( $interface, $address );
     my $last_ip = $cache_file->get_last_ip($interface);

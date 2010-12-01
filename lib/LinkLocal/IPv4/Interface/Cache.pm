@@ -243,15 +243,20 @@ to current system type.
 
 =item C<_slurp_file>
 
-_slurp_file() is a method delegate on the getlines() method of an L<IO::Handle> object via L<IO::File>
+_slurp_file() is a method delegate on the getlines() method of an L<IO::Handle> object via L<IO::File>.
+When called, _slurp_file() returns a list containing the contents of the cache file
 
 =item C<_record_ip>
 
-_record_ip() is a method delegate on the printf() method of an L<IO::Handle> object via L<IO::File>
+_record_ip() is a method delegate on the printf() method of an L<IO::Handle> object via L<IO::File>.
+This delegate is used to update the cache with the new interface/address mapping.
 
 =item C<_refresh_cache>
 
-_refresh_cache() is a method delegate on the seek() method of an L<IO::Seekable> object via L<IO::File>
+_refresh_cache() is a method delegate on the seek() method of an L<IO::Seekable> object via L<IO::File>.
+The _refresh_cache() delegate is used to reset the file pointer so that the stream is at the beginning of
+the file. This ensures that the next read from the file will have its stream set to the start of the
+file.
 
 =back
 
