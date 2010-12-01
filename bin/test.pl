@@ -32,8 +32,6 @@ use Config;
 use LinkLocal::IPv4::Interface;
 use LinkLocal::IPv4::Interface::Cache;
 
-use Regexp::Common;
-
 use Data::Dump qw/ ddx /;
 
 main();
@@ -42,18 +40,13 @@ main();
 # = main =
 # ========
 sub main {
-    
-    my $regexp = Regexp::Common->new();
 
-    # my $interface  = 'eth0';
-    # my $address    = '169.254.150.120';
-    # my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
-    # my $ref = $cache_file->_cache();
-    # ddx($ref);
-    # my @buffer = $cache_file->_cache->getlines();  
-    # ddx(@buffer);
-    # #$cache_file->cache_this_ip( $interface, $address );
-
+    my $interface  = 'eth0';
+    my $address    = '169.254.150.123';
+    my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
+    $cache_file->cache_this_ip( $interface, $address );
+	my $last_ip = $cache_file->get_last_ip($interface);
+	print("last IP is ", $last_ip, "\n");
 }
 
 __END__
