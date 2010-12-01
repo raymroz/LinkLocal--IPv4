@@ -19,33 +19,46 @@ require 5.010000;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use Regexp::Common qw/net/;
+use Regexp::Common qw/ net pattern /;
 use Net::Frame::Layer::ARP qw/:consts/;
 use IO::Interface::Simple;
 
 subtype 'ArpPacket' 
-	=> as class_type('Net::Frame::Layer::ARP');
+    => as class_type('Net::Frame::Layer::ARP');
 
 coerce 'ArpPacket' 
-	=> from 'HashRef' 
-	=> via { Net::Frame::Layer::ARP->new( %{$_} ) };
+    => from 'HashRef' 
+    => via { Net::Frame::Layer::ARP->new( %{$_} ) };
 
 subtype 'LinkLocalInterface' 
-	=> as class_type('IO::Interface::Simple');
+    => as class_type('IO::Interface::Simple');
 
 coerce 'LinkLocalInterface' 
-	=> from 'Str' 
-	=> via { IO::Interface::Simple->new($_) };
+    => from 'Str' 
+    => via { IO::Interface::Simple->new($_) };
 
 subtype 'IpAddress' 
-	=> as 'Str' 
-	=> where { /^$RE{net}{IPv4}/ } 
-	=> message { "$_: Invalid IPv4 address format." };
-	
-subtype 'LinkLocalAddress'
-	=> as 'IpAddress'
-	=> where { /^169\.254\./ }
-	=> message { "$_: Invalid IPv4 Link-Local Address" };
+    => as 'Str' 
+    => where { /^$RE{net}{IPv4}/ } 
+    => message { "$_: Invalid IPv4 address format." };
+
+subtype 'LinkLocalAddress' 
+    => as 'IpAddress' 
+    => where { /^$RE{net}{linklocal}/ } 
+    => message { "$_: Invalid IPv4 Link-Local Address" };
+
+# Custom Regexp::Common extension for link-local address pattern
+
+my %LLIP   = (
+    dec => q{(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
+);
+my $LLprefix = '169.254';
+my $IPdefsep = '[.]';
+
+pattern(
+    name   => [qw (net linklocal)],
+    create => "(?k:$LLprefix$IPdefsep$LLIP{dec}$IPdefsep$LLIP{dec})",
+);
 
 no Moose;
 

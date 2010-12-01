@@ -100,7 +100,7 @@ sub get_last_ip {
         return $cache{$given_ifc};
     }
     else {    # Empty buffer
-        return 'fail';
+        return undef;
     }
 }
 
@@ -109,41 +109,19 @@ sub cache_this_ip {
 
     # Validate parameters tyeps
     my ( $if, $ip ) =
-      pos_validated_list( \@_, { isa => 'Str' }, { isa => 'IpAddress' } );
+      pos_validated_list( \@_, { isa => 'Str' }, { isa => 'LinkLocalAddress' } );
 
     # Get cached IPs if exists
     my %cache = $this->_get_hash_from_cache();
 
-    # Print out old cache hash
-    print("\nPrevious cached ifc/IP list:\n");
-    $this->print_cache_hash( \%cache );
-
-    # Adding new IP
-    if ( $cache{$if} ) {    # If the interface exists
-        if ( $cache{$if} eq $ip ) {
-            print(
-"\nThe new interface and IP ($if -> $ip) you try to cache is already cached, skip...\n"
-            );
-        }
-        elsif ( $cache{$if} ne $ip ) {
-            print("\nCaching new IP ($ip) for interface ($if).....\n");
-            $cache{$if} = $ip;
-        }
-    }
-    else {                  # New IP entry
-        print("\nCaching new IP ($ip) and new interface ($if)...\n");
-        $cache{$if} = $ip;
-    }
+    # Adding IP to hash, creating or overwriting entry as need be.
+    $cache{$if} = $ip;
 
     # Re-position the file-handle to the beginning of the file
     $this->_refresh_cache( 0, 0 );
     foreach my $key ( sort ( keys(%cache) ) ) {
         $this->_record_ip( "%s\t%s\n", $key, $cache{$key} );
     }
-
-    # Print out latest cache hash
-    print("\nUpdated cached ifc/IP list:\n");
-    $this->print_cache_hash( \%cache );
 }
 
 sub _get_hash_from_cache {
@@ -167,24 +145,6 @@ sub _get_hash_from_cache {
     }
 
     return %cache;
-}
-
-sub print_cache_hash {
-    my $this = shift;
-    my ($cache) = pos_validated_list( \@_, { isa => 'Ref' } );
-
-    my $size = scalar( keys %$cache );
-    if ( $size > 0 ) {
-
-        # Output interfaces and IPs
-        foreach my $key ( sort ( keys(%$cache) ) ) {
-            print( "$key ", "-> ", $cache->{$key}, "\n" );
-        }
-        print("\n");
-    }
-    else {
-        print("(Empty)...\n");
-    }
 }
 
 no Moose;
@@ -281,9 +241,17 @@ iself an L<IO::File> object. It detects the OS on which the implementation is be
 that, configures the application cache to use the proper location for its environment according 
 to current system type.
 
-=item C<print_cache_hash>
+=item C<_slurp_file>
 
-print_cache_hash() is a method which print the cache hash contents. 
+_slurp_file() is a method delegate on the getlines() method of an L<IO::Handle> object via L<IO::File>
+
+=item C<_record_ip>
+
+_record_ip() is a method delegate on the printf() method of an L<IO::Handle> object via L<IO::File>
+
+=item C<_refresh_cache>
+
+_refresh_cache() is a method delegate on the seek() method of an L<IO::Seekable> object via L<IO::File>
 
 =back
 

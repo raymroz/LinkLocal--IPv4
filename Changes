@@ -1,6 +1,207 @@
-Revision history for Perl extension LinkLocal::IPv4::Interface.
+commit a07df83cc464ec826dd867506e3efbb185b0037e
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Tue Nov 30 22:05:55 2010 -0400
 
-0.01  Sun Nov 21 18:13:12 2010
-	- original version; created by h2xs 1.23 with options
-		-AX -b 5.10.0 -n LinkLocal::IPv4::Interface
+    Removed some debug prints, two includes and updated POD.
 
+ lib/LinkLocal/IPv4/Interface/Cache.pm |   13 ++++---------
+ lib/LinkLocal/IPv4/Interface/Types.pm |    2 +-
+ 2 files changed, 5 insertions(+), 10 deletions(-)
+
+commit 94f9fc205ede318739455e1115d90b258252e54f
+Author: Tony Li Xu <tonylixu@gmail.com>
+Date:   Tue Nov 30 21:41:33 2010 -0400
+
+    Perltidy ran on test.pl and Cache.pm
+
+ bin/test.pl                           |    4 +-
+ lib/LinkLocal/IPv4/Interface/Cache.pm |  124 +++++++++++++++++----------------
+ 2 files changed, 66 insertions(+), 62 deletions(-)
+
+commit f3991f1c4ad81dd69628dfde64d5d5d0229b132a
+Author: Tony Li Xu <tonylixu@gmail.com>
+Date:   Tue Nov 30 21:26:13 2010 -0400
+
+    Update Cache.pm and test.pl, finished functions in Cache.pn
+
+ bin/test.pl                           |   19 +--
+ lib/LinkLocal/IPv4/Interface/Cache.pm |  200 +++++++++++++++++++--------------
+ 2 files changed, 121 insertions(+), 98 deletions(-)
+
+commit 4f91731f4b296024123e699346e8e5b3dfa153c8
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Tue Nov 30 20:47:26 2010 -0400
+
+    Cleaned up POD in several files.
+
+ bin/test.pl                               |   18 +++-
+ lib/LinkLocal/IPv4/Interface.pm           |   12 ++--
+ lib/LinkLocal/IPv4/Interface/Cache.pm     |  135 ++++++++++++++---------------
+ lib/LinkLocal/IPv4/Interface/Constants.pm |    6 +-
+ lib/LinkLocal/IPv4/Interface/Types.pm     |    6 +-
+ 5 files changed, 92 insertions(+), 85 deletions(-)
+
+commit 86dd443e0ec4dbaececdb9c9e02f0af0f6e59147
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Mon Nov 29 17:55:41 2010 -0400
+
+    Added Cache.pm, partially completed.
+    
+    Fixed some POD in other modules.
+
+ README                                    |   86 +++++++++-
+ bin/test.pl                               |   14 +-
+ lib/LinkLocal/IPv4/Interface.pm           |   22 ++--
+ lib/LinkLocal/IPv4/Interface/ARP.pm       |    5 +
+ lib/LinkLocal/IPv4/Interface/Cache.pm     |  272 +++++++++++++++++++++++++++++
+ lib/LinkLocal/IPv4/Interface/Constants.pm |   62 +++++++-
+ 6 files changed, 438 insertions(+), 23 deletions(-)
+
+commit d80c95bfed728f9cca2fb9b7351bf62029e941b9
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Wed Nov 24 19:19:06 2010 -0400
+
+    Cleaned up all POD
+
+ bin/test.pl                               |    4 +
+ lib/LinkLocal/IPv4/Interface.pm           |  202 +++++++++++++++++++++++++++--
+ lib/LinkLocal/IPv4/Interface/ARP.pm       |   88 +++++++------
+ lib/LinkLocal/IPv4/Interface/Constants.pm |    2 +-
+ lib/LinkLocal/IPv4/Interface/Types.pm     |   89 ++++++++-----
+ 5 files changed, 300 insertions(+), 85 deletions(-)
+
+commit 2439fa2191590724f4dc5aa269201159b28da101
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Tue Nov 23 23:57:21 2010 -0400
+
+    Some small file tweaks, moved some additional modules to the Types.pm file
+
+ lib/LinkLocal/IPv4/Interface.pm       |    2 --
+ lib/LinkLocal/IPv4/Interface/ARP.pm   |    1 -
+ lib/LinkLocal/IPv4/Interface/Types.pm |    3 +++
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 04d50108724d2d1db10888bbb3d0e86caf833cbd
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Tue Nov 23 23:51:05 2010 -0400
+
+    Added ARP.pm, Types.pm.  Completed POD for both types.
+    
+    ARP.pm - this Moose class represents an object wrapper around ARP
+    packet messages which are required by the specification, specifically
+    ARP PROBE and ARP ANNOUNCE.  Please see RFC-3927 for details.
+    Types.pm - this is just a collection of shared custom types which will
+    be included in files package wide.
+
+ bin/test.pl                               |   12 ++-
+ lib/LinkLocal/IPv4/Interface.pm           |   29 ++----
+ lib/LinkLocal/IPv4/Interface/ARP.pm       |  182 +++++++++++++++++++++++++++++
+ lib/LinkLocal/IPv4/Interface/Constants.pm |   17 +++-
+ lib/LinkLocal/IPv4/Interface/Types.pm     |  149 +++++++++++++++++++++++
+ 5 files changed, 365 insertions(+), 24 deletions(-)
+
+commit b3a41622615816f1332e6134939bf1bf0c6caabb
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Mon Nov 22 19:28:47 2010 -0400
+
+    Removed .TextMate project file from repository
+
+ LinkLocal.tmproj |   16 ----------------
+ 1 files changed, 0 insertions(+), 16 deletions(-)
+
+commit 665b49c3f6af98f7f5ddb0d4e54846678cfa6e9e
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Mon Nov 22 19:27:00 2010 -0400
+
+    Removed .DS_Store OS X specific files from repository
+
+ .DS_Store               |  Bin 6148 -> 0 bytes
+ lib/.DS_Store           |  Bin 6148 -> 0 bytes
+ lib/LinkLocal/.DS_Store |  Bin 6148 -> 0 bytes
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 02f8a6fc3348218b2d2d1ad81672288444debc2f
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Mon Nov 22 00:05:53 2010 -0400
+
+    Pushing changes to reflect CPAN upload
+
+ README                          |   36 ++++++++++++++++++++----------------
+ lib/LinkLocal/IPv4/Interface.pm |   32 ++++++++++++++++++++------------
+ rfc3927.txt                     |    6 ------
+ 3 files changed, 40 insertions(+), 34 deletions(-)
+
+commit da994b999b2cd71c33acad7d11a01ea8619427fa
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 23:17:38 2010 -0400
+
+    Added copy of rfc3927 text
+
+ rfc3927.txt | 1851 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 1851 insertions(+), 0 deletions(-)
+
+commit 1df0b2fbd5543c70d27c467bf15ddceb4b59b4fd
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 22:55:49 2010 -0400
+
+    Additional cleaning, preperation for CPAN
+
+ bin/test.pl                     |    8 +++++++-
+ lib/LinkLocal/IPv4/Interface.pm |   25 +++++++++++++------------
+ 2 files changed, 20 insertions(+), 13 deletions(-)
+
+commit a92323a23dd00f217781138fc6d8aadf41255d07
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 22:03:57 2010 -0400
+
+    Cleaned up some testing cruft
+
+ bin/test.pl                     |   33 +++++++++++++
+ lib/LinkLocal/IPv4/Interface.pm |   95 ++++++++++++++++++++++----------------
+ 2 files changed, 88 insertions(+), 40 deletions(-)
+
+commit 40e472f357a3cbcb900051236560e30ec831fff7
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 20:07:34 2010 -0400
+
+    Adjusted package path in Constants.pm
+
+ lib/LinkLocal/IPv4/Interface.pm           |   28 ++++++++++++++++++----------
+ lib/LinkLocal/IPv4/Interface/Constants.pm |    2 +-
+ 2 files changed, 19 insertions(+), 11 deletions(-)
+
+commit c7660eddcd9754b20e27c7bdd03bab2a91b00ba8
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 20:06:00 2010 -0400
+
+    Added gpl.txt to project
+
+ gpl.txt |  674 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 674 insertions(+), 0 deletions(-)
+
+commit 33c230ba513655486dd8462fb8b535d877cfde84
+Author: Ray Mroz <raymondmroz@gmail.com>
+Date:   Sun Nov 21 19:23:18 2010 -0400
+
+    Added Constants.pm to project
+
+ lib/LinkLocal/IPv4/Interface/Constants.pm |   53 +++++++++++++++++++++++++++++
+ 1 files changed, 53 insertions(+), 0 deletions(-)
+
+commit 4f738c4c5812f768b81de7a540899e449b564d89
+Author: Raymond Mroz <rmroz@Mac-Mini.local>
+Date:   Sun Nov 21 19:14:16 2010 -0400
+
+    Initial commit of project to place under git control
+
+ .DS_Store                       |  Bin 0 -> 6148 bytes
+ Changes                         |    6 ++
+ LinkLocal.tmproj                |   16 ++++
+ MANIFEST                        |    6 ++
+ Makefile.PL                     |   12 +++
+ README                          |   40 +++++++++
+ lib/.DS_Store                   |  Bin 0 -> 6148 bytes
+ lib/LinkLocal/.DS_Store         |  Bin 0 -> 6148 bytes
+ lib/LinkLocal/IPv4/Interface.pm |  179 +++++++++++++++++++++++++++++++++++++++
+ t/LinkLocal-IPv4-Interface.t    |   18 ++++
+ 10 files changed, 277 insertions(+), 0 deletions(-)
