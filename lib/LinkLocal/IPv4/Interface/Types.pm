@@ -44,7 +44,7 @@ subtype 'IpAddress'
 	
 subtype 'LinkLocalAddress'
 	=> as 'IpAddress'
-	=> where { /^/ }
+	=> where { /^169\.254\./ }
 	=> message { "$_: Invalid IPv4 Link-Local Address" };
 
 no Moose;

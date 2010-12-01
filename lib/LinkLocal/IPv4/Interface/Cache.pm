@@ -2,7 +2,7 @@ package LinkLocal::IPv4::Interface::Cache;
 
 require 5.010000;
 
-# Copyright (C) 2010 Raymond Mroz
+# Copyright (C) 2010 Raymond Mroz, Tony Li Xu
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,10 +21,9 @@ use LinkLocal::IPv4::Interface::Types;
 use Moose;
 use MooseX::Params::Validate;
 use IO::File;
-use IO::All;
-use IO::Seekable;
 use Try::Tiny;
 use Data::Dump qw/ ddx /;
+
 use feature ':5.10';
 
 # Attributes
@@ -50,19 +49,15 @@ sub _build_cache {
         # Determine the file name based on OS
         given ($^O) {
             when ( m/linux/ || m/bsd/ ) {    # Linux || (Free|Open|Net)BSD
-                print("OS MATCHED ON Linux/BSD\n");
                 $filename = "/var/cache/link-local/link-local.tab";
             }
             when (m/darwin/) {               # Mac OS X
-                print("OS MATCHED ON MAC\n");
                 $filename = "/Library/Caches/org.cpan.cache.link-local";
             }
             when (m/solaris/) {              # SunOS
-                print("OS MATCHED ON SunOS\n");
                 $filename = "/etc/link-local/link-local.tab";
             }
             when (m/MSWin32/) {              # Windows
-                print("OS MATCHED ON Windows\n");
                 $filename = "%ALLUSERSPROFILE%\\link-local\\link-local.tab";
             }
             default {
@@ -282,11 +277,11 @@ This project is also hosted on github at:
 
 =head1 AUTHOR
 
-Ray Mroz, E<lt>mroz@cpan.orgE<gt>
+Tony Li Xu, E<lt>tonylixu@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010 Ray Mroz
+Copyright (C) 2010 Ray Mroz, Tony Li Xu
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
