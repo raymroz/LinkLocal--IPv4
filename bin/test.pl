@@ -32,8 +32,6 @@ use Config;
 use LinkLocal::IPv4::Interface;
 use LinkLocal::IPv4::Interface::Cache;
 
-use Data::Dump qw/ ddx /;
-
 main();
 
 # ========
@@ -41,12 +39,16 @@ main();
 # ========
 sub main {
 
-    my $interface  = 'eth0';
-    my $address    = '169.254.150.123';
+    my $interface  = 'eth1';
+    my $address    = '169.254.150.128';
     my $cache_file = LinkLocal::IPv4::Interface::Cache->new();
     $cache_file->cache_this_ip( $interface, $address );
     my $last_ip = $cache_file->get_last_ip($interface);
-    print( "last IP is ", $last_ip, "\n" );
+    if ( $last_ip ne 'fail' ) {
+    	print( "last IP of interface $interface is ", $last_ip, "\n" );
+	} else {
+		print("No IP exists for interface $interface\n");
+	}
 }
 
 __END__
