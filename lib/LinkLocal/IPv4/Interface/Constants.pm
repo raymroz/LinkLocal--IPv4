@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface::Constants;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 # Copyright (C) 2010 Raymond Mroz
 #
@@ -73,6 +73,10 @@ LinkLocal::IPv4::Interface::Constants - IPv4 link-local protocol constants as de
 =head1 SYNOPSIS
 
   use LinkLocal::IPv4::Interface::Constants qw/:consts/;
+  
+  for ( my $iter = 0; $iter < PROBE_NUM; $iter++ ) {
+      send_probe();
+  }
 
 =head1 DESCRIPTION
 
@@ -101,6 +105,10 @@ L<perl>, L<LinkLocal::IPv4::Interface>
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
+
+=head1 BUGS
+
+What's a bug???
 
 =head1 AUTHOR
 

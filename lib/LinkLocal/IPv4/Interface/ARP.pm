@@ -1,6 +1,8 @@
 package LinkLocal::IPv4::Interface::ARP;
 
-require 5.010000;
+our $VERSION = '0.16';
+
+require 5.010_000;
 
 # Copyright (C) 2010 Raymond Mroz
 #
@@ -172,6 +174,10 @@ L<perl>, L<Net::Frame::Layer>, L<Net::Frame::Layer::ARP>, L<Moose>
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
+
+=head1 BUGS
+
+What's a bug???
 
 =head1 AUTHOR
 

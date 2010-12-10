@@ -1,6 +1,8 @@
 package LinkLocal::IPv4::Interface::Types;
 
-require 5.010000;
+our $VERSION = '0.16';
+
+require 5.010_000;
 
 # Copyright (C) 2010 Raymond Mroz
 #
@@ -166,6 +168,10 @@ L<perl>, L<Net::Frame::Layer::ARP>, L<IO::Interface::Simple>, L<Regexp::Common>,
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
+
+=head1 BUGS
+
+What's a bug???
 
 =head1 AUTHOR
 

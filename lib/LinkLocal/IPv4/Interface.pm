@@ -1,6 +1,8 @@
 package LinkLocal::IPv4::Interface;
 
-require 5.010000;
+our $VERSION = '0.16';
+
+require 5.010_000;
 
 # require Exporter;
 # our @ISA         = qw(Exporter);
@@ -348,6 +350,10 @@ L<perl>, L<IO::Interface::Simple>, L<Moose>
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
+	
+=head1 BUGS
+
+What's a bug???
 
 =head1 AUTHOR
 
