@@ -99,6 +99,8 @@ This module requires these other modules and libraries:
   IO::Interface::Simple
   Net::Frame::Layer::Arp
   Regexp::Common
+  IO::File
+  Try::Tiny
 
 COPYRIGHT AND LICENCE
 

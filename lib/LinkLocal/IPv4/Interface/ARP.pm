@@ -22,12 +22,13 @@ require 5.010_000;
 use Moose;
 use Moose::Util::TypeConstraints;
 use LinkLocal::IPv4::Interface::Types;
+use Net::Frame::Simple;
 
 # ==========
 # = packet =
 # ==========
 has 'packet' => (
-    is      => 'rw',
+    is      => 'ro',
     isa     => 'ArpPacket',
     handles => {
         pack_arp        => 'pack',

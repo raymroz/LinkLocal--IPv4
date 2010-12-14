@@ -21,9 +21,9 @@ WriteMakefile(
     'PREREQ_PM' => {
         'Moose'                        => '1.20',
         'Moose::Util::TypeConstraints' => '0',
-        'IO::Interface::Simple'        => '1.05',
+        'IO::Interface::Simple'        => '0',
         'Regexp::Common'               => '2010010201',
-        'Net::Frame::Layer::ARP'       => '1.06',
+        'Net::Frame::Layer::ARP'       => '0',
         'MooseX::Params::Validate'     => '0.15',
         'IO::File'                     => '0.14',
         'Try::Tiny'                    => '0.09',
