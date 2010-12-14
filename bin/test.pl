@@ -31,6 +31,7 @@ use Config;
 
 use LinkLocal::IPv4::Interface;
 use LinkLocal::IPv4::Interface::Cache;
+use LinkLocal::IPv4::Interface::Logger;
 
 main();
 
@@ -50,6 +51,13 @@ sub main {
     else {
         print("No IP exists for interface $interface\n");
     }
+
+	my $logger = LinkLocal::IPv4::Interface::Logger->new();
+	$logger->set_log_indent("IPv4");
+	$logger->set_log_mask();
+	$logger->open_log();
+	$logger->error("This is a error test");
+	$logger->emerg("This is a emerg test");
 }
 
 __END__
