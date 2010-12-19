@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     'NAME'           => 'LinkLocal::IPv4::Interface',
-    'VERSION_FROM'   => 'lib/LinkLocal/IPv4/Interface.pm',    # finds $VERSION
+    'VERSION_FROM'   => 'lib/LinkLocal/IPv4/Interface.pm',
     'BUILD_REQUIRES' => {
         'FindBin'          => '0',
         'Moose::Role'      => '0',

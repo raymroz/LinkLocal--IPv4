@@ -4,10 +4,26 @@ our $VERSION = '0.16';
 
 require 5.010_000;
 
+# Copyright (C) 2010 Raymond Mroz, Tony Li Xu
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 use LinkLocal::IPv4::Interface::Types;
-use Sys::Syslog qw/ :standard :macros /;
 use Moose;
 use MooseX::Params::Validate;
+use Try::Tiny;
+use Sys::Syslog qw/ :standard :macros /;
 
 use feature ':5.10';
 
@@ -56,75 +72,130 @@ sub open_log {
         facility => { isa => 'Str', optional => 1, default => 'user' }
     );
 
-    openlog( $params{indent}, $params{options}, $params{facility} );
+    try {
+        openlog( $params{indent}, $params{options}, $params{facility} );
+    }
+    catch {
+        die "Unable to open syslog instance for writing: $!";
+    };
 }
 
 sub _set_log_mask {
     my $this = shift;
 
-    setlogmask( ~( &Sys::Syslog::LOG_MASK(NOTICE) ) );
+    try {
+        setlogmask( ~( &Sys::Syslog::LOG_MASK(NOTICE) ) );
+    }
+    catch {
+        die "Error while setting log mask: $!";
+    };
 }
 
 sub emerg {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'emerg', "%8s: %s", "Emerg", $message );
+    try {
+        syslog( 'emerg', "%8s: %s", "Emerg", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub alert {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'alert', "%8s: %s", "Alert", $message );
+    try {
+        syslog( 'alert', "%8s: %s", "Alert", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub critical {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'crit', "%8s: %s", "Critical", $message );
+    try {
+        syslog( 'crit', "%8s: %s", "Critical", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub error {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'err', "%8s: %s", "Error", $message );
+    try {
+        syslog( 'err', "%8s: %s", "Error", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub warning {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'warning', "%8s: %s", "Warning", $message );
+    try {
+        syslog( 'warning', "%8s: %s", "Warning", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub notice {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'notice', "%8s: %s", "Notice", $message );
+    try {
+        syslog( 'notice', "%8s: %s", "Notice", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub info {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'info', "%8s: %s", "Info", $message );
+    try {
+        syslog( 'info', "%8s: %s", "Info", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub debug {
     my $this = shift;
     my ($message) = pos_validated_list( \@_, { isa => 'Str' } );
 
-    syslog( 'debug', "%8s: %s", "Debug", $message );
+    try {
+        syslog( 'debug', "%8s: %s", "Debug", $message );
+    }
+    catch {
+        die "Error while writing to syslog: $!";
+    };
 }
 
 sub close_log {
     my $this = shift;
 
-    closelog();
+    try {
+        closelog();
+    }
+    catch {
+        die "Error while closing syslog: $!";
+    };
 }
 
 no Moose;
