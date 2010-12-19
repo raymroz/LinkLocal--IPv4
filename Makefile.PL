@@ -27,15 +27,14 @@ WriteMakefile(
         'MooseX::Params::Validate'     => '0.15',
         'IO::File'                     => '0.14',
         'Try::Tiny'                    => '0.09',
+        'Sys::Syslog'                  => '0.27',
     },
     'test' => { 'TESTS' => 't/*.t', },
     (
         $] >= 5.005
-        ?
-          (
-            'ABSTRACT_FROM' =>
-              'lib/LinkLocal/IPv4/Interface.pm',
-            'AUTHOR' => 'Ray Mroz <mroz@cpan.org>'
+        ? (
+            'ABSTRACT_FROM' => 'lib/LinkLocal/IPv4/Interface.pm',
+            'AUTHOR'        => 'Ray Mroz <mroz@cpan.org>'
           )
         : ()
     ),

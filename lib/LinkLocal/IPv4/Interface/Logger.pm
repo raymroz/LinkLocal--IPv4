@@ -167,7 +167,7 @@ so in an OOPish and Moose'ish way.
 
 =item C<_logger>
 
-Foo Foo Foo Foo
+The wrapped logger object instance.
 
 =back
 
@@ -179,7 +179,8 @@ Foo Foo Foo Foo
 
 =item C<new>
 
-The default constructor takes no arguments and returns an instance of Logger.
+The default constructor takes no arguments and returns an instance of the Logger
+object.
 
 =head3 Public Methods
 
@@ -204,21 +205,24 @@ facility arguments although sane defaults are provided by L<MooseX::Params::Vali
 
 =item C<debug>
 
-Plug in information here about all of the above.
+Each of the above public methods take a message argument and logs it at the appropriate
+level.
 
 =item C<close_log>
 
-To be done
+Close the syslog instance for writing.
 
 =head3 Private Methods
 
 =item C<_set_log_mask>
 
-To be done
+This private method is used to set a default log level mask. Called by the logger's builder
+method modifier.
 
 =item C<_build_logger>
 
-Foo Foo Foo
+Builds a logger object instance from the L<Sys::Syslog> interface and wraps it as a L<Moose>
+class type.
 
 =back
 
