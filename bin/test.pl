@@ -53,11 +53,11 @@ sub main {
     }
 
 	my $logger = LinkLocal::IPv4::Interface::Logger->new();
-	$logger->set_log_indent("IPv4");
-	$logger->set_log_mask();
-	$logger->open_log();
+
+	$logger->open_log( indent => 'IPv4' );
 	$logger->error("This is a error test");
 	$logger->emerg("This is a emerg test");
+	$logger->close_log();
 }
 
 __END__

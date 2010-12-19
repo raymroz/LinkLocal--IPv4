@@ -8,11 +8,10 @@ use LinkLocal::IPv4::Interface::Types;
 use Sys::Syslog qw/ :standard :macros /;
 use Moose;
 use MooseX::Params::Validate;
-use MooseX::SemiAffordanceAccessor;
 
 use feature ':5.10';
 
-# Log level hash, hold codes and integer values
+# Log level constants
 use constant {
     EMERG  => 0,
     ALERT  => 1,
@@ -25,49 +24,45 @@ use constant {
 };
 
 # Attributes
-has '_logger',
-  isa        => 'Sys::Syslog',
-  is         => 'ro',
-  lazy_build => 1;
+has '_logger' => (
+    isa     => 'Sys::Syslog',
+    is      => 'bare',
+    lazy    => 1,
+    builder => '_build_logger',
+);
 
-has 'log_indent',
-  isa     => 'Str',
-  is      => 'rw',
-  default => 'LinkLocal--IPv4';
-
-has 'log_opt',
-  isa     => 'Str',
-  is      => 'rw',
-  default => 'pid,cons';
-
-has 'log_facility',
-  isa     => 'Str',
-  is      => 'rw',
-  default => 'local3';
-
-sub _build__logger {
+# Builder
+sub _build_logger {
     my $class = shift;
     my $this  = ref Sys::Syslog();
 
     bless $this, $class;
     return $this->_logger;
 }
-after '_build__logger' => sub {
+
+# Modifier
+after '_build_logger' => sub {
     my $this = shift;
 
-    $this->set_log_mask();
+    $this->_set_log_mask();
 };
 
+# Methods
 sub open_log {
-    my $this = shift;
+    my ( $self, %params ) = validated_hash(
+        \@_,
+        indent => { isa => 'Str', optional => 1, default => 'LinkLocal--IPv4' },
+        options  => { isa => 'Str', optional => 1, default => 'pid,cons' },
+        facility => { isa => 'Str', optional => 1, default => 'user' }
+    );
 
-    openlog( $this->log_indent, $this->log_opt, $this->log_facility );
+    openlog( $params{indent}, $params{options}, $params{facility} );
 }
 
-sub set_log_mask {
+sub _set_log_mask {
     my $this = shift;
 
-    setlogmask( ~( &Sys::Syslog::LOG_MASK( NOTICE ) ) );
+    setlogmask( ~( &Sys::Syslog::LOG_MASK(NOTICE) ) );
 }
 
 sub emerg {
@@ -144,11 +139,15 @@ LinkLocal::IPv4::Interface::Logger - A Moose-wrapped syslog interface.
 
   my $logger = LinkLocal::IPv4::Interface::Logger->new();
 
-  $logger->set_log_indent("IPv4");
-  $logger->set_log_mask();
-  $logger->open_log();
-  $logger->error("This is a error test");
-  $logger->emerg("This is a emerg test");
+  $logger->open_log( indent => 'IPv4' );
+  $logger->error("This is an error test");
+  $logger->emerg("This is an emerg test");
+  $logger->close_log();
+  
+  $logger->open_log( indent => 'IPv4--Test', facility => 'local3' );
+  $logger->debug("This is a debug test");
+  $logger->notice("This is a notice test");
+  $logger->close_log();
 
 =head1 DESCRIPTION
 
@@ -162,17 +161,7 @@ so in an OOPish and Moose'ish way.
 
 =head3 Public Attributes
 
-=item C<log_indent>
-
-Some stuff here
-
-=item C<log_opt>
-
-Foo foo
-
-=item C<log_facility>
-
-Fo Foo Fooo
+=item C<N/A>
 
 =head3 Private Attributes
 
@@ -196,43 +185,26 @@ The default constructor takes no arguments and returns an instance of Logger.
 
 =item C<open_log>
 
-To be done
-
-=item C<set_log_mask>
-
-To be done
+Opens up the syslog instance for writing. Can take optional indent, options and
+facility arguments although sane defaults are provided by L<MooseX::Params::Validate>.
 
 =item C<emerg>
 
-To be done
-
 =item C<alert>
-
-To be done
 
 =item C<critical>
 
-To be done
-
 =item C<error>
-
-To be done
 
 =item C<warning>
 
-To be done
-
 =item C<notice>
-
-To be done
 
 =item C<info>
 
-To be done
-
 =item C<debug>
 
-To be done
+Plug in information here about all of the above.
 
 =item C<close_log>
 
@@ -240,7 +212,11 @@ To be done
 
 =head3 Private Methods
 
-=item C<_build__logger>
+=item C<_set_log_mask>
+
+To be done
+
+=item C<_build_logger>
 
 Foo Foo Foo
 
@@ -251,7 +227,7 @@ Foo Foo Foo
 Refer to RFC-3927, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
-L<perl>, L<Net::Frame::Layer::ARP>, L<IO::Interface::Simple>, L<Regexp::Common>, L<Moose>
+L<perl>, L<Moose>, L<MooseX::Params::Validate>, L<Sys::Syslog>
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
@@ -262,7 +238,7 @@ What's a bug???
 
 =head1 AUTHOR
 
-Ray Mroz, E<lt>mroz@cpan.orgE<gt>
+Tony Li Xu, E<lt>tonylixu@gmail.comE<gt>, Ray Mroz, E<lt>mroz@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
