@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface::ARP;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 require 5.010_000;
 
@@ -22,7 +22,14 @@ require 5.010_000;
 use Moose;
 use Moose::Util::TypeConstraints;
 use LinkLocal::IPv4::Interface::Types;
+
+use Net::Frame::Layer::ETH qw(:consts);
 use Net::Frame::Simple;
+use Net::Frame::Dump::Online;
+use Net::Frame::Device;
+use Net::Write::Layer2;
+use Net::Netmask;
+
 
 # ==========
 # = packet =
@@ -42,6 +49,7 @@ has 'packet' => (
     coerce => 1,
 );
 
+
 sub send {
     my $this = shift;
     # TODO Handle send, packet object will be passed into a "sender machine"
@@ -55,8 +63,7 @@ __PACKAGE__->meta->make_immutable;
 =head1 NAME
 
 LinkLocal::IPv4::Interface::ARP - An ARP packet wrapper, this class allows for the easy construction
-of either Probe or Announce ARP Requests, both of which are central to dynamic link-local address
-configuration.
+of either link-local Probe or Announce ARP Requests.
 
 =head1 SYNOPSIS
 

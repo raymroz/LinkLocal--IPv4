@@ -1,6 +1,13 @@
 Changes
+GPL.txt
 Makefile.PL
 MANIFEST
 README
+RFC3927.txt
 t/LinkLocal-IPv4-Interface.t
 lib/LinkLocal/IPv4/Interface.pm
+lib/LinkLocal/IPv4/Interface/ARP.pm
+lib/LinkLocal/IPv4/Interface/Cache.pm
+lib/LinkLocal/IPv4/Interface/Constants.pm
+lib/LinkLocal/IPv4/Interface/Logger.pm
+lib/LinkLocal/IPv4/Interface/Types.pm

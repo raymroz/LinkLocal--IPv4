@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface::Types;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 require 5.010_000;
 

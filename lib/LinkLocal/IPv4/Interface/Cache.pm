@@ -1,6 +1,6 @@
 package LinkLocal::IPv4::Interface::Cache;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 require 5.010_000;
 
@@ -46,7 +46,6 @@ sub _build_cache {
     my $filename;    # Cache file name
 
     try {
-
         # Determine the file name based on OS
         given ($^O) {
             when ( m/linux/ || m/bsd/ ) {    # Linux || (Free|Open|Net)BSD
@@ -67,7 +66,7 @@ sub _build_cache {
         }
 
         # Create IO::File object and return
-        return new IO::File( "$filename", O_RDWR | O_CREAT );
+        return new IO::File( $filename, O_RDWR | O_CREAT );
     }
     catch {
         die "Error while opening cache file: $!";

@@ -302,7 +302,7 @@ class type.
 Refer to RFC-3927, I<Dynamic Configuration of IPv4 Link-Local Adresses>, the complete
 text of which can be found in the top level of the package archive.
 
-L<perl>, L<Moose>, L<MooseX::Params::Validate>, L<Sys::Syslog>
+L<perl>, L<Moose>, L<MooseX::Params::Validate>, L<Sys::Syslog>, L<Try::Tiny>
 
 This project is also hosted on github at:
 	git@github.com:raymroz/LinkLocal--IPv4.git
